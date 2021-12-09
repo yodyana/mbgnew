@@ -542,7 +542,8 @@
         </div>
 
       </div>
-    </section><!-- End Events Section -->
+    </section>
+    <!-- End Events Section -->
 
     <!-- ======= Gallery Section ======= -->
     <section id="gallery" class="gallery">
