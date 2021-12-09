@@ -1,7 +1,9 @@
 <?php
 // session_start();
 // //Koneksi
-$koneksi = new mysqli("localhost","root","","mbg");
+
+$koneksi = mysqli_connect("localhost","root","","mbg");
+
 session_start();
 if(empty($_SESSION['username']) and empty($_SESSION['password'])) {
     echo '
@@ -454,32 +456,75 @@ if(empty($_SESSION['username']) and empty($_SESSION['password'])) {
       </div>
     </section> -->
 
-    <!-- ======= Events Section ======= -->
-    <?php
-       $ambil = $koneksi->query("SELECT * FROM promo WHERE kd_promo");
-       // $pecah = $ambil->fetch_assoc();
-       while($row = $ambil->fetch_assoc()){
-    ?>
-    <section id="events" class="events">
+<?php 
+// func query
+function query($query)
+{
+    global   $koneksi;
+    $result = mysqli_query($koneksi, $query);
+    $rows = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $rows[] = $row;
+    }
+    return $rows;
+}
+// end query
+?>
+     <!-- ======= Events Section ======= -->
+     <section id="events" class="events">
       <div class="container" data-aos="fade-up">
+
         <div class="section-title">
           <h2>Paket Spesial</h2>
           <p>Promo & Event</p>
         </div>
+        <div class="events-slider swiper" data-aos="fade-up" data-aos-delay="100">
+          <div class="swiper-wrapper">
+      <?php $queryPromo = query("SELECT * FROM promo ORDER BY kd_promo DESC LIMIT 5 ");
+      foreach ($queryPromo as $row ) :
+      ?>
+
             <div class="swiper-slide">
               <div class="row event-item">
                 <div class="col-lg-6">
-                    <img src="assets/img/<?php echo $row['gambar_promo']; ?>" class="img-fluid" width="450" height="450" alt="">
+                    <img src="assets/img/<?= $row['gambar_promo'] ?>" class="img-fluid" width="450" height="450" alt="">
                   </a>
                 </div>
                 <div class="col-lg-6 pt-4 pt-lg-0 content">
-                  <h3><?php echo $row['judul_promo']; ?></h3>
+                  <h3><?= $row['judul_promo'] ?></h3>
                   <div class="price">
-                    <p><span>Rp<?php echo $row['harga_promo']; ?></span></p>
+                    <p><span>Rp. <?= number_format($row['harga_promo'],0,'.','.') ?></span></p>
+                  </div>
+                  <p class="fst-italic">
+                   <?= $row['deskripsi'] ?>
+                  </p>
+                  <ul>
+                    <li><i class="bi bi-check-circled"></i>Ada berbagai macam pilihan makanan dan harga yang spesial tentunya. Yuk buruan di order, 
+                      kalau mau tanya-tanya dulu juga boleh.</li>
+                  </ul>
+                  <div class="btns">
+                    <a href="https://api.whatsapp.com/send?phone=6281214800813" class="btn-menu animated fadeInUp scrollto">Selengkapnya</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        <?php endforeach; ?>
+            <!-- <div class="swiper-slide">
+              <div class="row event-item">
+                <div class="col-lg-6">
+                    <img src="assets/img/promo4.jpg" class="img-fluid" width="450" height="450" alt="">
+                  </a>
+                </div>
+                <div class="col-lg-6 pt-4 pt-lg-0 content">
+                  <h3>Promo Tanggal Tua</h3>
+                  <div class="price">
+                    <p><span>Rp75.000</span></p>
                   </div>
                   <p class="fst-italic">
                     Halo halo... <br>
-                    <?php echo $row['deskripsi']; ?>
+                    Ada promo tanggaltua nih, ayam kremes utuh kampung dari harga 115.000 jadi 75.000 untuk makan di tempat 
+                    dan bisa buat berempat! Setiap tanggal 25 bulan september, oktober dan november.
                   </p>
                   <ul>
                     <li><i class="bi bi-check-circled"></i>Syaratnya gampang banget cukup tunjukin postingan ini ke waiter / 
@@ -489,11 +534,11 @@ if(empty($_SESSION['username']) and empty($_SESSION['password'])) {
                   <div class="btns">
                     <a href="https://api.whatsapp.com/send?phone=6281214800813" class="btn-menu animated fadeInUp scrollto">Pesan Sekarang</a>
                   </div>
-              </div>
+                </div>
               </div>
             </div>
-            
-            <!-- <div class="swiper-slide">
+
+            <div class="swiper-slide">
               <div class="row event-item">
                 <div class="col-lg-6">
                     <img src="assets/img/promo1.jpg" class="img-fluid" width="450" height="450" alt="">
@@ -543,15 +588,16 @@ if(empty($_SESSION['username']) and empty($_SESSION['password'])) {
                   </div>
                 </div>
               </div>
-            </div> 
-          </div>-->
+            </div> -->
+            <!-- End testimonial item -->
+
+          </div>
           <div class="swiper-pagination"></div>
         </div>
+
       </div>
-    </section><!-- End Events Section -->
-    <?php
-      }
-    ?>
+    </section>
+    <!-- End Events Section -->
 
     <!-- ======= Gallery Section ======= -->
     <section id="gallery" class="gallery">
@@ -722,7 +768,6 @@ if(empty($_SESSION['username']) and empty($_SESSION['password'])) {
       </div>
     </div>
   </footer><!-- End Footer -->
-
   <div id="preloader"></div>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
